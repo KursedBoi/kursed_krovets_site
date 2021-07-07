@@ -26,5 +26,41 @@ void prof_flow12_authb_hash(void *p1, void *p2, void* result);
 // is a signature from Bob of the hash.
 int flow12_authb_verify(void *p1, void *p2) 
 {
+	uint8_t* buf = (uint8_t *)p2;
+	uint8_t res[32];
+	uint16_t bytes[5];
+	uint16_t adder = 0;
+	for(int i = 0; i < 5; i++)
+	{
+		bytes[i] = load_uint16_big(buf + (i*2));
+		if(i != 4)
+			adder+=bytes[i];
+	}
 	
+	prof_flow12_authb_hash(p1, p2, res);
+	
+	BIGNUM* res_bn = BN_bin2bn(res, 32, NULL);
+	BIGNUM* auth_b = BN_bin2bn(buf + 10 + adder, bytes[4], NULL); 
+	BIGNUM* bn = BN_new();
+	BIGNUM* expo = BN_new();
+	BN_CTX* ctx = BN_CTX_new();
+	
+	BN_hex2bn(&bn, Bn);
+	BN_set_word(expo, e);
+	
+	BN_mod_exp(auth_b, auth_b, expo, bn, ctx);
+	
+	int cmp = BN_cmp(auth_b, res_bn);
+	//printf("%d", cmp);
+	
+	BN_free(auth_b);
+	BN_free(res_bn);
+	BN_free(bn);
+	BN_free(expo);
+	BN_CTX_free(ctx);
+	
+	if(cmp == 0)
+		return 1;
+	else
+		return 0;
 }
