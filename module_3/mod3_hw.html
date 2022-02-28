@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3 HW</title>
+</head>
+<body>
+    <br><a href="../index.html">Back</a>
+    <h1>Question 1</h1>
+    <p>
+        Study the code at <a href="../module_2/cbc_encrypt.c">cbc_encrypt.c</a>
+        Any function call that you do not understand, you should read the available documentation. If it's a C library function searching the internet for, say, "man fread" will find the fread's online manual page. If it's an OpenSSL function, searching the internet for, say, "openssl 1.1.1 EVP_EncryptInit_ex" will find the latest OpenSSL documentation for EVP_EncryptInit_ex (you will then need to find the function within the page).
+
+        This code takes a source and destination file as command line arguments, prompts the user for a passphrase, and then CBC encrypts the source file into the destination file. The first 16 bytes of the destination file is the random IV used for encryption.
+
+        In this assignment, you are to write a decryption version of this program. It should take a source and destination file as command line arguments, prompt the user for a passphrase, and then CBC decrypt the source file into the destination file. You should base the decryption program on the encryption program; they differ in very few details: Only the source of the IV and a few function call changes (eg, EVP_DecryptInit_ex instead of EVP_EncryptInit_ex).
+    </p>
+    <br><a href="q1.c">Question 1</a>
+    <br><a href="q1_complete.c">Question 1 Answer</a>
+
+    <h1>Question 2</h1>
+    <p>
+        We saw that SHA-3 uses what is called a "sponge" construction. It absorbs the data to be hashed and then squeezes out the hash result. Here is pseudocode describing the sponge using perm384 as its permutation, a rate of 16, and an output of 32 bytes.
+        <br>
+        <br>let block be 48 bytes of zero
+        <br>let R=16 be the number of bytes of the rate part of the block
+        <br>while data remaining is not less than R bytes
+        <br>xor next R bytes of data with the first R bytes of the block
+        <br>update block using perm384
+        <br> Xor any remaining data into the beginning of the block
+        <br> Xor 0b10000000 into the next byte (after the data) of the block
+        <br> Xor 0b00000001 at byte index R-1 of the block
+        <br> update block using perm384
+        <br>  output R bytes from beginning of block
+        <br> update block using perm384
+        <br> output R bytes from beginning of block
+        <br><br>
+        Lines 6-8 is a shortcut for handling the 10*1 padding. Instead of explicitly padding the end of the data, the end of the data is xor'd directly into the block, and then the two 1's are xor'd where they belong. Since xor'ing the 0* has no effect on the block, it is not done explicitly.
+
+        <br><br>Do not worry about endianess in this program. As in previous perm384 programs, we will continue to use native reads and writes, implying that this function is defined for little-endian memory access.
+    </p>
+    <br><a href="q2.c">Question 2</a>
+    <br><a href="q2_complete.c">Question 2 Answer</a>
+
+    <h1>Question 3</h1>
+    <img src="q3explanation.png" alt="shitem8">
+    <br><a href="q3.c">Question 3</a>
+    <br><a href="q3_complete.c">Question 3 Answer</a>
+    <br><a href="../index.html">Back</a>
+</body>
+</html>
